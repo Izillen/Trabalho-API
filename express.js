@@ -83,6 +83,26 @@ app.patch('/items/:id', (req, res) => {
     const name = req.params.name;
 });
 
+app.patch('/items/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = items.findIndex(item => item.id === id);
+    if (index !== -1) {
+        const { name } = req.body;
+        if (name && typeof name === 'string' && name.length >= 3) {
+            items[index].name = name;
+            res.status(200).json(items[index]);
+        } else {
+            return res.status(400).json({ message: "O campo name deve ser uma string com pelo menos 3 caracteres." });
+        }
+    } else {
+        res.status(404).json({ message: "Item não encontrado!" });
+    }
+});
+
+app.get('/items/count', (req, res) => {
+    res.status(200).json({ count: items.length });
+});
+
 app.listen(port, () => {
     console.log(`O servidor está rodando em http://localhost:${port}`);
 })
